@@ -154,7 +154,4 @@ def rgb_to_uint32(r=255, g=255, b=255, a=255):
        
 rospy.init_node("virat_img_processor", anonymous=True)
 my_processor = imageProcessor()
-my_processor.process()     
-     
-           
-                      
+my_processor.process()       
