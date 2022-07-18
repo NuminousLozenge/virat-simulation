@@ -1,0 +1,9 @@
+<launch>
+<!-- Convert xacro and put on parameter server -->
+
+  <arg name="model" default="$(find virat_description)/urdf/virat.xacro"/>
+  <param name="virat_description" command="$(find xacro)/xacro --inorder $(arg model)" />
+  
+<!-- Spawn a robot into Gazebo -->
+<node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param virat_description -urdf -model virat" />
+</launch>

@@ -1,0 +1,33 @@
+<launch>
+
+  <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find virat_gazebo)/worlds/virat3.world"/>
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+  </include>
+
+  <!-- Load the URDF into the ROS Parameter Server -->
+  <param name="robot_description"
+    command="$(find xacro)/xacro --inorder '$(find virat_description)/urdf/virat.xacro'" />
+
+  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    args="-urdf -model virat -param robot_description"/>
+    
+  <!-- Launch static transform publisher -->
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_camera" args="0.73 0 1.18 0 0.45 0 base_link camera 30" />
+  <node pkg="tf" type="static_transform_publisher" name="map_to_odom" args="0.0 0 0 0 0 0 map odom 30" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_right_tyre" args="0.0 -0.12 0 0 0 0 base_link right_tyre 30" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_left_tyre" args="0.0 0.12 0 0 0 0 base_link left_tyre 30" />
+</launch>

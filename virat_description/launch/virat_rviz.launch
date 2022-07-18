@@ -1,0 +1,12 @@
+<launch>
+  <param name="robot_description"
+    command="$(find xacro)/xacro --inorder '$(find virat_description)/urdf/virat.xacro'" />
+
+  <!-- Combine joint values -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+  <!-- Show in Rviz   -->
+  <node name="virat_img_processor" pkg="virat_control" type="virat_cv_pipe.py"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find virat_description)/launch/virat.rviz"/>
+
+</launch>

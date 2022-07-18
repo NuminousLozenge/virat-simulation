@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<!-- Virat Robot -->
+<robot name="virat" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Constants for virat -->
+  <xacro:property name="wheel_y" value="0.12"/> <!-- wheel y position wrt body-->
+  <xacro:property name="wheel_radius" value="1"/> <!-- wheel radius -->
+  <xacro:property name="castor_x" value="0.2"/> <!-- castor x position wrt body-->
+  <xacro:property name="castor_z" value="-0.0175"/> <!-- castor z position wrt body-->
+  <xacro:property name="cam_x" value="0.73"/> <!-- camera x position wrt body-->
+  <xacro:property name="cam_z" value="1.18"/> <!-- camera z position wrt body-->
+  <xacro:property name="cam_size" value="0.05"/> <!-- camera dimensions -->
+  
+  <!-- including plugins file -->
+  <xacro:include filename="$(find virat_description)/urdf/virat_plugins.xacro" />
+     
+  <!-- body -->
+  <link name="base_link" >
+    <inertial>
+      <origin xyz="0 0 0" /> 
+      <mass value="8.0" />
+      <inertia  ixx="2" ixy="0.0"  ixz="0.0"  iyy="3"  iyz="0.0"  izz="1" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://virat_description/meshes/body/bot2.dae" />
+      </geometry>             
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://virat_description/meshes/body/bot2.dae" />
+      </geometry>             
+    </collision>
+  </link>
+
+  <!-- wheels -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="left_tyre" />
+    <origin xyz="0 ${wheel_y} 0" rpy="0 0 0" />
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <link name="left_tyre" >
+    <inertial>
+      <origin xyz="0 ${wheel_y} 0" /> 
+      <mass value="1.0" />
+      <inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  iyy="0.001"  iyz="0.0"  izz="0.001" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 ${wheel_y} 0"/>
+      <geometry>
+        <mesh filename="package://virat_description/meshes/wheels/tyre1.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 ${wheel_y} 0"/>
+      <geometry>
+        <mesh filename="package://virat_description/meshes/wheels/tyre1.dae" />
+      </geometry>
+    </collision>
+  </link>
+  
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="right_tyre" />
+    <origin xyz="0 ${-wheel_y} 0" rpy="0 0 0" />
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <link name="right_tyre" >
+    <inertial>
+      <origin xyz="0 ${-wheel_y} 0" /> 
+      <mass value="1.0" />
+      <inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  iyy="0.001"  iyz="0.0"  izz="0.001" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 ${-wheel_y} 0"/>
+      <geometry>
+        <mesh filename="package://virat_description/meshes/wheels/tyre1.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 ${-wheel_y} 0"/>
+      <geometry>
+        <mesh filename="package://virat_description/meshes/wheels/tyre1.dae" />
+      </geometry>
+    </collision>
+  </link> 
+  
+  <!-- castor -->
+  <joint name="castor_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="castor_link" />
+    <origin xyz="${castor_x+0.05} 0 ${castor_z}" rpy="0 0 0" />
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <link name="castor_link" >
+    <inertial>
+      <origin xyz="${castor_x} 0 ${castor_z}" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  iyy="0.001"  iyz="0.0"  izz="0.001" />
+    </inertial>
+
+    <visual>
+      <origin xyz="${castor_x} 0 ${castor_z}" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://virat_description/meshes/wheels/castors1.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="${castor_x} 0 ${castor_z}" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://virat_description/meshes/wheels/castors1.dae" />
+      </geometry>
+    </collision>
+  </link> 
+ 
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="camera_link" />
+    <origin xyz="${cam_x} 0 ${cam_z}" rpy="0 0.45 0" />
+  </joint>
+
+  <!-- camera -->
+   <link name="camera_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+	<box size="${cam_size} ${cam_size} ${cam_size}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+	<box size="${cam_size} ${cam_size} ${cam_size}"/>
+      </geometry> 
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link> 
+  
+  <!-- generate an optical frame http://www.ros.org/reps/rep-0103.html#suffix-frames
+      so that ros and opencv can operate on the camera frame correctly -->
+  <joint name="camera_optical_joint" type="fixed">
+    <!-- these values have to be these values otherwise the gazebo camera image
+        won't be aligned properly with the frame it is supposedly originating from -->
+    <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+    <parent link="camera_link"/>
+    <child link="camera_link_optical"/>
+  </joint>
+
+  <link name="camera_link_optical">
+  </link>
+</robot>
