@@ -7,7 +7,7 @@ Packages for simulating Virat using ros, gazebo and rviz
 - run catkin_make in catkin_ws
 
 ## Running the simulation
-- Open 3 separate terminals and source the packages using source devel/setup.bash inside catkin_ws
+- Open separate terminals and source the packages using source devel/setup.bash inside catkin_ws
 - Run the following commands in the separate terminals in order
 
 Gazebo:
