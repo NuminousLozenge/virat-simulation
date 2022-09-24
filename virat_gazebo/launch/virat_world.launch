@@ -26,8 +26,8 @@
     args="-urdf -model virat -param robot_description"/>
     
   <!-- Launch static transform publisher -->
-  <node pkg="tf" type="static_transform_publisher" name="base_link_to_camera" args="0.73 0 1.18 0 0.45 0 base_link camera 30" />
   <node pkg="tf" type="static_transform_publisher" name="map_to_odom" args="0.0 0 0 0 0 0 map odom 30" />
+  <!--<node pkg="tf" type="static_transform_publisher" name="base_link_to_camera" args="0.73 0 1.18 0 0.45 0 base_link camera 30" />-->
   <node pkg="tf" type="static_transform_publisher" name="base_link_to_right_tyre" args="0.0 -0.12 0 0 0 0 base_link right_tyre 30" />
   <node pkg="tf" type="static_transform_publisher" name="base_link_to_left_tyre" args="0.0 0.12 0 0 0 0 base_link left_tyre 30" />
 </launch>

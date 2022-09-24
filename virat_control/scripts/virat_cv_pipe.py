@@ -40,11 +40,13 @@ class imageProcessor():
         self.br = CvBridge()
         
         self.intrinsic_camera_array = None
+        self.tf_listener = tf.TransformListener()
         
         rospy.Subscriber("/virat/camera1/image_raw", Image, self.callback)
         rospy.Subscriber("/odom", Odometry, self.odom_callback)
         rospy.Subscriber("/virat/camera1/camera_info", CameraInfo, self.camera_info_callback)
         self.pub = rospy.Publisher("/virat/point_cloud", PointCloud2, queue_size = 3)
+        
     def callback(self, msg):
         self.image = self.br.imgmsg_to_cv2(msg) # convert image msg to cv2 for image manipulation
         
@@ -59,13 +61,18 @@ class imageProcessor():
         
         
     def fn(self, u ,v):
-        # Takes u v returns Xc Yc Zc (camera coordinates)
+        '''Takes u v returns Xc Yc Zc (camera coordinates)'''
+        
+        # trans contains the translation of the camera wrt base
+        # trans[2] is the z coordinate of camera
+        (trans,rot) = self.tf_listener.lookupTransform('/base_link', '/camera_link', rospy.Time(0))
+
         
         # W = 800            # Width of sensor in pixels
         # H = 800            # Height of sensor in pixels
         # f = 476.703084     # focal length in pixels
-        h = 1.18           # height of camera from ground (in meters) (assume constant) (cam_z)
-        d = 0.73           # cam_x
+        h = trans[2]         # height of camera from ground (in meters) (assume constant) (cam_z)
+        # d = 0.73           # cam_x
         # a = f
         # u0 = W/2
         # v0 = H/2
@@ -80,7 +87,7 @@ class imageProcessor():
         
         # rotation matrix
         roll = 0
-        pitch = -0.45
+        pitch = -0.45 - self.pitch
         yaw = 0
         cy, sy = np.cos(yaw), np.sin(yaw)
         cp, sp = np.cos(pitch), np.sin(pitch)
@@ -121,7 +128,7 @@ class imageProcessor():
                  PointField('rgb', 16, PointField.UINT32, 1),
                 ]
        header = Header()
-       header.frame_id = "camera"
+       header.frame_id = "camera_link"
            
        while not rospy.is_shutdown(): 
            if self.image is not None:
