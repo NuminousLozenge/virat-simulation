@@ -9,7 +9,6 @@
     
     
     <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
-    <param name="controller_frequency" value="10.0" />
     
     <remap from="/cmd_vel" to="/virat/cmd_vel"/>
  </node>
