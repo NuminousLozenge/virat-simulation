@@ -117,8 +117,10 @@ class imageProcessor():
         color = rgb_to_uint32(r=255, g=255, b=255, a=255) # set r g b a values for colour of point cloud
         for c in cnts:
             for p in c:
+                # for the purpose of simulating a 3d obstacle the same data is repeated in the z plane
                 coord = self.fn(p[0][0], p[0][1])
-                points.append((coord[2], -coord[0], -coord[1]-self.z, color))       #[Z, -X, -Y]
+                for i in range(20):
+                    points.append((coord[2], -coord[0], -coord[1]-self.z+(i/10), color))       #[Z, -X, -Y]
         return points
             
     def process(self):
